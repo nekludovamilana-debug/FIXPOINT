@@ -1,0 +1,1215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчёты и аналитика | FIXPOINT</title>
+ 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+ 
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f3f4;
+            color: #252529;
+        }
+ 
+        /* БОКОВАЯ ПАНЕЛЬ */
+ 
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100vh;
+            background: #171719;
+            color: white;
+            padding: 35px 20px 25px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+ 
+        .logo {
+            font-size: 29px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 5px 0 55px 5px;
+            white-space: nowrap;
+        }
+ 
+        .logo span {
+            color: #e52d40;
+        }
+ 
+        .menu-title {
+            color: #99999f;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 18px 5px;
+        }
+ 
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+ 
+        .menu a {
+            display: block;
+            color: #e5e5e7;
+            text-decoration: none;
+            padding: 15px 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+ 
+        .menu a:hover {
+            background: #303034;
+        }
+ 
+        .menu a.active {
+            background: #39343a;
+            border-left: 4px solid #e52d40;
+            padding-left: 10px;
+            font-weight: bold;
+        }
+ 
+        .sidebar-bottom {
+            margin-top: auto;
+            border-top: 1px solid #414145;
+            padding-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+ 
+        .sidebar-bottom a {
+            color: #d5d5d8;
+            text-decoration: none;
+            padding: 12px 10px;
+            font-size: 14px;
+        }
+ 
+        .sidebar-bottom a:hover {
+            color: white;
+        }
+ 
+        /* ОСНОВНАЯ ОБЛАСТЬ */
+ 
+        .main {
+            margin-left: 240px;
+            min-height: 100vh;
+            padding: 42px;
+            width: calc(100% - 240px);
+        }
+ 
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+ 
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+ 
+        .header h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #242429;
+        }
+ 
+        .subtitle {
+            color: #85858b;
+            margin: 9px 0 0;
+            font-size: 15px;
+        }
+ 
+        .header-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+ 
+        .button {
+            display: inline-block;
+            padding: 12px 17px;
+            border: none;
+            border-radius: 9px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            font-weight: 600;
+        }
+ 
+        .button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+ 
+        .excel-button {
+            background: #25834d;
+        }
+ 
+        .pdf-button {
+            background: #c52232;
+        }
+ 
+        .print-button {
+            background: #333338;
+        }
+ 
+        .back-button {
+            background: #55555b;
+        }
+ 
+        /* СЕКЦИИ */
+ 
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            box-shadow: 0 3px 12px rgba(15, 15, 20, 0.04);
+        }
+ 
+        .section h2 {
+            margin: 0 0 20px;
+            font-size: 21px;
+            color: #29292e;
+        }
+ 
+        /* ФИЛЬТР */
+ 
+        .filter-section {
+            border-left: 4px solid #c52232;
+        }
+ 
+        .date-filter {
+            display: flex;
+            align-items: end;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+ 
+        .date-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+ 
+        .date-field label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #55555b;
+        }
+ 
+        .date-field input {
+            padding: 11px;
+            border: 1px solid #dedee1;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+ 
+        .date-field input:focus {
+            outline: none;
+            border-color: #c52232;
+        }
+ 
+        .apply-button {
+            background: #c52232;
+        }
+ 
+        .reset-button {
+            background: #696970;
+        }
+ 
+        .date-error {
+            color: #c52232;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+ 
+        .period-info {
+            color: #88888e;
+            font-size: 13px;
+            margin: 15px 0 0;
+        }
+ 
+        /* КАРТОЧКИ */
+ 
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+ 
+        .card {
+            background: white;
+            padding: 23px;
+            border-radius: 13px;
+            box-shadow: 0 3px 12px rgba(15, 15, 20, 0.04);
+            border-top: 4px solid #c52232;
+            min-width: 0;
+        }
+ 
+        .card h3 {
+            color: #85858b;
+            font-size: 14px;
+            font-weight: normal;
+            margin: 0 0 14px;
+        }
+ 
+        .number {
+            font-size: 29px;
+            font-weight: bold;
+            color: #29292e;
+            overflow-wrap: anywhere;
+        }
+ 
+        .money {
+            color: #25834d;
+        }
+ 
+        .status-card {
+            border-top-color: #777780;
+        }
+ 
+        .revenue-card {
+            border-top-color: #25834d;
+        }
+ 
+        /* ДИАГРАММЫ */
+ 
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 750px;
+            height: 350px;
+            margin: 0 auto;
+        }
+ 
+        /* ТАБЛИЦЫ */
+ 
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+ 
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+        }
+ 
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eeeeef;
+        }
+ 
+        th {
+            background: #f7f7f8;
+            color: #66666d;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+ 
+        td {
+            font-size: 14px;
+            color: #45454b;
+        }
+ 
+        tbody tr:hover {
+            background: #fafafa;
+        }
+ 
+        .count {
+            font-weight: bold;
+            color: #c52232;
+        }
+ 
+        .revenue {
+            font-weight: bold;
+            color: #25834d;
+        }
+ 
+        .empty {
+            color: #85858b;
+            text-align: center;
+            padding: 25px 10px;
+        }
+ 
+        .section-description {
+            color: #85858b;
+            font-size: 13px;
+            margin-top: -12px;
+            margin-bottom: 20px;
+        }
+ 
+        /* НИЖНЯЯ ПОЛОСА */
+ 
+        .bottom-line {
+            height: 12px;
+            margin: 35px -42px -42px;
+            background: linear-gradient(90deg, #f5a0a0, #e52d40, #c52232);
+        }
+ 
+        /* АДАПТАЦИЯ */
+ 
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 210px;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+ 
+            .main {
+                margin-left: 210px;
+                width: calc(100% - 210px);
+                padding: 25px;
+            }
+ 
+            .bottom-line {
+                margin-left: -25px;
+                margin-right: -25px;
+                margin-bottom: -25px;
+            }
+ 
+            .header h1 {
+                font-size: 25px;
+            }
+        }
+ 
+        @media (max-width: 650px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 20px;
+            }
+ 
+            .logo {
+                margin: 0 0 20px;
+            }
+ 
+            .menu-title {
+                margin-bottom: 10px;
+            }
+ 
+            .menu {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+ 
+            .menu a {
+                font-size: 13px;
+                padding: 12px 9px;
+            }
+ 
+            .sidebar-bottom {
+                margin-top: 18px;
+                padding-top: 12px;
+            }
+ 
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 15px;
+            }
+ 
+            .header {
+                align-items: flex-start;
+            }
+ 
+            .header h1 {
+                font-size: 23px;
+            }
+ 
+            .header-buttons {
+                width: 100%;
+            }
+ 
+            .header-buttons .button {
+                flex: 1 1 130px;
+            }
+ 
+            .section {
+                padding: 17px;
+            }
+ 
+            .date-field {
+                width: 100%;
+            }
+ 
+            .date-field input {
+                width: 100%;
+            }
+ 
+            .date-filter .button {
+                flex: 1;
+            }
+ 
+            .chart-container {
+                height: 280px;
+            }
+ 
+            .number {
+                font-size: 25px;
+            }
+ 
+            .bottom-line {
+                margin: 25px -15px -20px;
+            }
+        }
+ 
+        /* ПЕЧАТЬ */
+ 
+        @media print {
+            .sidebar {
+                display: none !important;
+            }
+ 
+            .main {
+                margin: 0;
+                width: 100%;
+                padding: 0;
+            }
+ 
+            body {
+                background: white;
+                padding: 0;
+                color: black;
+            }
+ 
+            .container {
+                max-width: 100%;
+            }
+ 
+            .header-buttons,
+            .filter-section {
+                display: none !important;
+            }
+ 
+            .card,
+            .section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+ 
+            .section {
+                margin-bottom: 15px;
+            }
+ 
+            .cards {
+                break-inside: avoid;
+            }
+ 
+            h1, h2, h3 {
+                color: black;
+            }
+ 
+            table {
+                font-size: 11px;
+            }
+ 
+            th, td {
+                padding: 8px;
+            }
+ 
+            .chart-container {
+                break-inside: avoid;
+            }
+ 
+            .bottom-line {
+                display: none;
+            }
+ 
+            @page {
+                margin: 15mm;
+            }
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+<!-- БОКОВОЕ МЕНЮ -->
+ 
+<aside class="sidebar">
+ 
+    <div class="logo">FIX<span>POINT</span></div>
+ 
+    <div class="menu-title">Рабочее пространство</div>
+ 
+    <nav class="menu">
+ 
+        <a href="{% url 'master_panel' %}">
+            Панель мастера
+        </a>
+ 
+        <a href="{% url 'stock_list' %}">
+            Склад запчастей
+        </a>
+ 
+        <a href="{% url 'service_list' %}">
+            Управление услугами
+        </a>
+ 
+        {% if user.is_superuser %}
+            <a href="{% url 'employee_list' %}">
+                Сотрудники
+            </a>
+ 
+            <a href="{% url 'reports' %}" class="active">
+                Отчёты и аналитика
+            </a>
+        {% endif %}
+ 
+    </nav>
+ 
+    <div class="sidebar-bottom">
+ 
+        {% if user.is_superuser %}
+            <a href="/admin/">Админ-панель →</a>
+        {% endif %}
+ 
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}">Выйти из аккаунта</a>
+        {% endif %}
+ 
+    </div>
+ 
+</aside>
+ 
+<!-- ОСНОВНАЯ ЧАСТЬ -->
+ 
+<main class="main">
+ 
+<div class="container">
+ 
+    <!-- ЗАГОЛОВОК -->
+ 
+    <div class="header">
+ 
+        <div>
+            <h1>Отчёты и аналитика</h1>
+ 
+            <p class="subtitle">
+                Статистика работы ремонтной мастерской
+            </p>
+        </div>
+ 
+        <div class="header-buttons">
+ 
+            <a href="{% url 'export_reports' %}?start_date={{ start_date|urlencode }}&end_date={{ end_date|urlencode }}"
+               class="button excel-button">
+                ↓ Скачать Excel
+            </a>
+ 
+            <a href="{% url 'export_reports_pdf' %}?start_date={{ start_date|urlencode }}&end_date={{ end_date|urlencode }}"
+               class="button pdf-button">
+                ↓ Скачать PDF
+            </a>
+ 
+            <button type="button"
+                    class="button print-button"
+                    onclick="window.print()">
+                Печать
+            </button>
+ 
+            <a href="{% url 'master_panel' %}"
+               class="button back-button">
+                ← Назад
+            </a>
+ 
+        </div>
+ 
+    </div>
+ 
+    <!-- ФИЛЬТР ПО ДАТАМ -->
+ 
+    <div class="section filter-section">
+ 
+        <h2>Фильтр по периоду</h2>
+ 
+        <form method="GET" class="date-filter">
+ 
+            <div class="date-field">
+                <label for="start_date">Дата начала</label>
+ 
+                <input
+                    type="date"
+                    id="start_date"
+                    name="start_date"
+                    value="{{ start_date }}"
+                >
+            </div>
+ 
+            <div class="date-field">
+                <label for="end_date">Дата окончания</label>
+ 
+                <input
+                    type="date"
+                    id="end_date"
+                    name="end_date"
+                    value="{{ end_date }}"
+                >
+            </div>
+ 
+            <button type="submit" class="button apply-button">
+                Применить
+            </button>
+ 
+            <a href="{% url 'reports' %}"
+               class="button reset-button">
+                Сбросить
+            </a>
+ 
+        </form>
+ 
+        {% if date_error %}
+            <p class="date-error">{{ date_error }}</p>
+        {% endif %}
+ 
+        {% if start_date or end_date %}
+            <p class="period-info">
+                Отчёт сформирован с учётом выбранного периода.
+            </p>
+        {% else %}
+            <p class="period-info">
+                Отображаются данные за стандартный период отчёта.
+            </p>
+        {% endif %}
+ 
+    </div>
+ 
+    <!-- СТАТИСТИКА ЗАЯВОК -->
+ 
+    <div class="cards">
+ 
+        <div class="card">
+            <h3>Всего заявок</h3>
+            <div class="number">
+                {{ total_repairs|default:0 }}
+            </div>
+        </div>
+ 
+        {% for status in status_statistics %}
+            <div class="card status-card">
+                <h3>{{ status.name }}</h3>
+                <div class="number">
+                    {{ status.count|default:0 }}
+                </div>
+            </div>
+        {% endfor %}
+ 
+    </div>
+ 
+    <!-- ФИНАНСОВАЯ СТАТИСТИКА -->
+ 
+    <div class="cards">
+ 
+        <div class="card revenue-card">
+            <h3>Общая сумма заявок</h3>
+ 
+            <div class="number money">
+                {{ total_revenue|default:0|floatformat:2 }} ₽
+            </div>
+        </div>
+ 
+        <div class="card revenue-card">
+            <h3>Выручка по завершённым заявкам</h3>
+ 
+            <div class="number money">
+                {{ completed_revenue|default:0|floatformat:2 }} ₽
+            </div>
+        </div>
+ 
+    </div>
+ 
+    <!-- ДИАГРАММА СТАТУСОВ -->
+ 
+    <div class="section">
+ 
+        <h2>Распределение заявок по статусам</h2>
+ 
+        {% if status_statistics %}
+ 
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
+            </div>
+ 
+        {% else %}
+ 
+            <p class="empty">
+                Нет данных для построения диаграммы.
+            </p>
+ 
+        {% endif %}
+ 
+    </div>
+ 
+    <!-- ПОПУЛЯРНЫЕ УСТРОЙСТВА -->
+ 
+    <div class="section">
+ 
+        <h2>Популярные типы устройств</h2>
+ 
+        {% if fault_statistics %}
+ 
+            <div class="chart-container">
+                <canvas id="faultChart"></canvas>
+            </div>
+ 
+        {% else %}
+ 
+            <p class="empty">
+                Нет данных за выбранный период.
+            </p>
+ 
+        {% endif %}
+ 
+    </div>
+ 
+    <!-- ЗАГРУЗКА МАСТЕРОВ -->
+ 
+    <div class="section">
+ 
+        <h2>Загрузка мастеров</h2>
+ 
+        {% if master_statistics %}
+ 
+            <div class="chart-container">
+                <canvas id="masterChart"></canvas>
+            </div>
+ 
+        {% else %}
+ 
+            <p class="empty">
+                Нет назначенных заявок за выбранный период.
+            </p>
+ 
+        {% endif %}
+ 
+    </div>
+ 
+    <!-- ДИНАМИКА ЗАЯВОК -->
+ 
+    <div class="section">
+ 
+        <h2>Динамика заявок по месяцам</h2>
+ 
+        {% if monthly_statistics %}
+ 
+            <div class="chart-container">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+ 
+        {% else %}
+ 
+            <p class="empty">
+                Нет данных для построения графика.
+            </p>
+ 
+        {% endif %}
+ 
+    </div>
+ 
+    <!-- ТАБЛИЦА ПО МЕСЯЦАМ -->
+ 
+    <div class="section">
+ 
+        <h2>Заявки и выручка за выбранный период</h2>
+ 
+        <p class="section-description">
+            Количество заявок и сумма выручки по месяцам
+        </p>
+ 
+        {% if monthly_statistics %}
+ 
+            <div class="table-wrapper">
+ 
+                <table>
+ 
+                    <thead>
+                        <tr>
+                            <th>Месяц</th>
+                            <th>Количество заявок</th>
+                            <th>Выручка</th>
+                        </tr>
+                    </thead>
+ 
+                    <tbody>
+ 
+                        {% for month in monthly_statistics %}
+ 
+                            <tr>
+                                <td>{{ month.month|date:"F Y" }}</td>
+ 
+                                <td>{{ month.total }}</td>
+ 
+                                <td class="revenue">
+                                    {{ month.revenue|default:0|floatformat:2 }} ₽
+                                </td>
+                            </tr>
+ 
+                        {% endfor %}
+ 
+                    </tbody>
+ 
+                </table>
+ 
+            </div>
+ 
+        {% else %}
+ 
+            <p class="empty">
+                За выбранный период заявок нет.
+            </p>
+ 
+        {% endif %}
+ 
+    </div>
+ 
+    <!-- ПОПУЛЯРНОСТЬ УСЛУГ -->
+ 
+    <div class="section">
+ 
+        <h2>Популярность и выручка услуг</h2>
+ 
+        <p class="section-description">
+            Статистика выполненных услуг и полученной выручки
+        </p>
+ 
+        {% if popular_services %}
+ 
+            <div class="table-wrapper">
+ 
+                <table>
+ 
+                    <thead>
+                        <tr>
+                            <th>Название услуги</th>
+                            <th>Категория</th>
+                            <th>Текущая цена</th>
+                            <th>Время выполнения</th>
+                            <th>Количество заявок</th>
+                            <th>Выручка</th>
+                        </tr>
+                    </thead>
+ 
+                    <tbody>
+ 
+                        {% for service in popular_services %}
+ 
+                            <tr>
+                                <td>{{ service.name }}</td>
+ 
+                                <td>
+                                    {{ service.get_category_display }}
+                                </td>
+ 
+                                <td>
+                                    {{ service.price|floatformat:2 }} ₽
+                                </td>
+ 
+                                <td>
+                                    {{ service.duration }}
+                                </td>
+ 
+                                <td class="count">
+                                    {{ service.request_count|default:0 }}
+                                </td>
+ 
+                                <td class="revenue">
+                                    {{ service.revenue|default:0|floatformat:2 }} ₽
+                                </td>
+                            </tr>
+ 
+                        {% endfor %}
+ 
+                    </tbody>
+ 
+                </table>
+ 
+            </div>
+ 
+        {% else %}
+ 
+            <p class="empty">
+                Услуг пока нет.
+            </p>
+ 
+        {% endif %}
+ 
+    </div>
+ 
+</div>
+ 
+<div class="bottom-line"></div>
+ 
+</main>
+ 
+<!-- ДАННЫЕ ДЛЯ ДИАГРАММ -->
+ 
+{{ status_statistics|json_script:"status-data" }}
+{{ monthly_statistics|json_script:"monthly-data" }}
+{{ fault_statistics|json_script:"fault-data" }}
+{{ master_statistics|json_script:"master-data" }}
+ 
+<script>
+ 
+    const statusElement = document.getElementById('status-data');
+    const monthlyElement = document.getElementById('monthly-data');
+    const faultElement = document.getElementById('fault-data');
+    const masterElement = document.getElementById('master-data');
+ 
+    const statusData = statusElement
+        ? JSON.parse(statusElement.textContent)
+        : [];
+ 
+    const monthlyData = monthlyElement
+        ? JSON.parse(monthlyElement.textContent)
+        : [];
+ 
+    const faultData = faultElement
+        ? JSON.parse(faultElement.textContent)
+        : [];
+ 
+    const masterData = masterElement
+        ? JSON.parse(masterElement.textContent)
+        : [];
+ 
+    /* ДИАГРАММА СТАТУСОВ */
+ 
+    const statusCanvas = document.getElementById('statusChart');
+ 
+    if (statusCanvas && statusData.length > 0) {
+ 
+        new Chart(statusCanvas, {
+ 
+            type: 'doughnut',
+ 
+            data: {
+                labels: statusData.map(item => item.name),
+ 
+                datasets: [{
+                    data: statusData.map(item => item.count),
+ 
+                    backgroundColor: [
+                        '#c52232',
+                        '#e85b68',
+                        '#777780',
+                        '#b9b9bf',
+                        '#333338'
+                    ],
+ 
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverOffset: 8
+                }]
+            },
+ 
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+ 
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+ 
+        });
+ 
+    }
+ 
+    /* ДИНАМИКА ЗАЯВОК */
+ 
+    const monthlyCanvas = document.getElementById('monthlyChart');
+ 
+    if (monthlyCanvas && monthlyData.length > 0) {
+ 
+        const monthlyLabels = monthlyData.map(item => {
+ 
+            const date = new Date(item.month);
+ 
+            return date.toLocaleDateString('ru-RU', {
+                month: 'long',
+                year: 'numeric'
+            });
+ 
+        });
+ 
+        const monthlyValues = monthlyData.map(item => item.total);
+ 
+        new Chart(monthlyCanvas, {
+ 
+            type: 'line',
+ 
+            data: {
+                labels: monthlyLabels,
+ 
+                datasets: [{
+ 
+                    label: 'Количество заявок',
+ 
+                    data: monthlyValues,
+ 
+                    borderColor: '#c52232',
+                    backgroundColor: 'rgba(197, 34, 50, 0.12)',
+ 
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.35,
+ 
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+ 
+                }]
+            },
+ 
+            options: {
+ 
+                responsive: true,
+                maintainAspectRatio: false,
+ 
+                scales: {
+                    y: {
+                        beginAtZero: true,
+ 
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
+ 
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+ 
+            }
+ 
+        });
+ 
+    }
+ 
+    /* ПОПУЛЯРНЫЕ УСТРОЙСТВА */
+ 
+    const faultCanvas = document.getElementById('faultChart');
+ 
+    if (faultCanvas && faultData.length > 0) {
+ 
+        new Chart(faultCanvas, {
+ 
+            type: 'bar',
+ 
+            data: {
+                labels: faultData.map(item => item.device),
+ 
+                datasets: [{
+                    label: 'Количество заявок',
+                    data: faultData.map(item => item.total),
+                    backgroundColor: '#c52232',
+                    borderRadius: 6
+                }]
+            },
+ 
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+ 
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+ 
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+ 
+        });
+ 
+    }
+ 
+    /* ЗАГРУЗКА МАСТЕРОВ */
+ 
+    const masterCanvas = document.getElementById('masterChart');
+ 
+    if (masterCanvas && masterData.length > 0) {
+ 
+        new Chart(masterCanvas, {
+ 
+            type: 'bar',
+ 
+            data: {
+                labels: masterData.map(item => item.username),
+ 
+                datasets: [{
+                    label: 'Назначенные заявки',
+                    data: masterData.map(item => item.total),
+                    backgroundColor: '#55555b',
+                    borderRadius: 6
+                }]
+            },
+ 
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+ 
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+ 
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+ 
+        });
+ 
+    }
+ 
+</script>
+ 
+</body>
+</html>

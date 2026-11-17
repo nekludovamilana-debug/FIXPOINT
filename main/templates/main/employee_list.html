@@ -1,0 +1,484 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сотрудники — FIXPOINT</title>
+ 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+ 
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f3f4;
+            color: #292929;
+        }
+ 
+        /* Боковое меню */
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #171719;
+            color: white;
+            padding: 35px 18px 25px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+ 
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            margin: 0 10px 55px;
+            letter-spacing: -1px;
+        }
+ 
+        .logo span {
+            color: #e52d40;
+        }
+ 
+        .menu-title {
+            color: #999;
+            font-size: 12px;
+            margin: 0 10px 20px;
+            text-transform: uppercase;
+        }
+ 
+        .menu a {
+            display: block;
+            padding: 14px 12px;
+            margin-bottom: 7px;
+            color: #dedede;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 9px;
+            transition: .2s;
+        }
+ 
+        .menu a:hover {
+            background: #29292d;
+            color: white;
+        }
+ 
+        .menu a.active {
+            background: #393238;
+            border-left: 4px solid #e52d40;
+            padding-left: 8px;
+            font-weight: bold;
+        }
+ 
+        .sidebar-bottom {
+            margin-top: auto;
+            border-top: 1px solid #414145;
+            padding-top: 22px;
+        }
+ 
+        .sidebar-bottom a {
+            display: block;
+            padding: 12px 10px;
+            color: #dedede;
+            text-decoration: none;
+            font-size: 14px;
+        }
+ 
+        .sidebar-bottom a:hover {
+            color: #e52d40;
+        }
+ 
+        /* Основная область */
+        .main {
+            margin-left: 230px;
+            padding: 45px 40px;
+            min-height: 100vh;
+            min-width: 0;
+            width: calc(100% - 230px);
+        }
+ 
+        h1 {
+            font-size: 32px;
+            margin: 0 0 12px;
+            font-weight: 700;
+        }
+ 
+        .subtitle {
+            color: #929292;
+            font-size: 15px;
+            margin-bottom: 35px;
+        }
+ 
+        /* Кнопки */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+ 
+        .btn {
+            display: inline-block;
+            padding: 13px 18px;
+            border: none;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+ 
+        .btn-back {
+            background: #242428;
+            color: white;
+        }
+ 
+        .btn-back:hover {
+            background: #3a3a40;
+        }
+ 
+        .btn-add {
+            background: #c52232;
+            color: white;
+        }
+ 
+        .btn-add:hover {
+            background: #a91c2a;
+        }
+ 
+        /* Статистика */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border-left: 5px solid #c52232;
+            padding: 27px 30px;
+            margin-bottom: 45px;
+            box-shadow: 0 3px 12px #00000008;
+            max-width: 100%;
+        }
+ 
+        .stat-label {
+            color: #999;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+ 
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+ 
+        /* Таблица */
+        .section-title {
+            font-size: 27px;
+            margin: 0 0 12px;
+        }
+ 
+        .section-subtitle {
+            color: #999;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+ 
+        .table-card {
+            background: white;
+            border-radius: 13px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px #00000008;
+            width: 100%;
+        }
+ 
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+ 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+ 
+        th {
+            background: #fafafa;
+            color: #777;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: left;
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
+        }
+ 
+        td {
+            padding: 20px;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+        }
+ 
+        tr:last-child td {
+            border-bottom: none;
+        }
+ 
+        .username {
+            font-weight: bold;
+        }
+ 
+        .role {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            background: #f1eafa;
+            color: #7544a3;
+            font-size: 12px;
+            font-weight: bold;
+        }
+ 
+        .role.master {
+            background: #eaf0fc;
+            color: #365ca4;
+        }
+ 
+        .status {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+ 
+        .status.active {
+            background: #e7f5eb;
+            color: #278044;
+        }
+ 
+        .status.inactive {
+            background: #fdeaea;
+            color: #bd3030;
+        }
+ 
+        .action-btn {
+            border: none;
+            border-radius: 7px;
+            padding: 9px 13px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+ 
+        .disable-btn {
+            background: #c52232;
+        }
+ 
+        .enable-btn {
+            background: #27834a;
+        }
+ 
+        .protected {
+            color: #999;
+            font-size: 12px;
+        }
+ 
+        .empty {
+            text-align: center;
+            color: #999;
+            padding: 35px;
+        }
+ 
+        @media (max-width: 900px) {
+            .main {
+                padding: 35px 25px;
+            }
+ 
+            h1 {
+                font-size: 27px;
+            }
+        }
+ 
+        @media (max-width: 650px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 22px 16px;
+            }
+ 
+            .logo {
+                margin: 0 10px 25px;
+            }
+ 
+            .sidebar-bottom {
+                margin-top: 15px;
+            }
+ 
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 25px 15px;
+            }
+ 
+            h1 {
+                font-size: 24px;
+            }
+ 
+            .stat-card {
+                padding: 22px;
+                margin-bottom: 35px;
+            }
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+<aside class="sidebar">
+ 
+    <div class="logo">FIX<span>POINT</span></div>
+ 
+    <div class="menu-title">Рабочее пространство</div>
+ 
+    <nav class="menu">
+        <a href="{% url 'master_panel' %}">Панель мастера</a>
+        <a href="{% url 'stock_list' %}">Склад запчастей</a>
+        <a href="{% url 'service_list' %}">Управление услугами</a>
+        <a href="{% url 'employee_list' %}" class="active">Сотрудники</a>
+ 
+        {% if user.is_superuser %}
+            <a href="{% url 'reports' %}">Отчёты и аналитика</a>
+        {% endif %}
+    </nav>
+ 
+    <div class="sidebar-bottom">
+        {% if user.is_superuser %}
+            <a href="/admin/">Админ-панель →</a>
+        {% endif %}
+ 
+        <a href="{% url 'logout' %}">Выйти из аккаунта</a>
+    </div>
+ 
+</aside>
+ 
+<main class="main">
+ 
+    <h1>Управление сотрудниками</h1>
+ 
+    <div class="subtitle">
+        Сотрудники и управление доступом к системе
+    </div>
+ 
+    <div class="actions">
+        <a href="{% url 'master_panel' %}" class="btn btn-back">
+            ← Назад к панели мастера
+        </a>
+ 
+        <a href="{% url 'employee_add' %}" class="btn btn-add">
+            + Добавить сотрудника
+        </a>
+    </div>
+ 
+    <div class="stat-card">
+        <div class="stat-label">Всего сотрудников</div>
+        <div class="stat-value">{{ employees|length }}</div>
+    </div>
+ 
+    <h2 class="section-title">Список сотрудников</h2>
+ 
+    <div class="section-subtitle">
+        Все сотрудники, добавленные в ремонтную мастерскую
+    </div>
+ 
+    <div class="table-card">
+        <div class="table-wrap">
+ 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Логин</th>
+                        <th>ФИО</th>
+                        <th>Email</th>
+                        <th>Роль</th>
+                        <th>Доступ</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+ 
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td class="username">
+                            {{ employee.username }}
+                        </td>
+ 
+                        <td>
+                            {{ employee.get_full_name|default:"Не указано" }}
+                        </td>
+ 
+                        <td>
+                            {{ employee.email|default:"—" }}
+                        </td>
+ 
+                        <td>
+                            {% if employee.is_superuser %}
+                                <span class="role">Администратор</span>
+                            {% else %}
+                                <span class="role master">Мастер</span>
+                            {% endif %}
+                        </td>
+ 
+                        <td>
+                            {% if employee.is_active %}
+                                <span class="status active">Активен</span>
+                            {% else %}
+                                <span class="status inactive">Отключён</span>
+                            {% endif %}
+                        </td>
+ 
+                        <td>
+                            {% if employee.pk == user.pk or employee.is_superuser %}
+                                <span class="protected">Защищён</span>
+                            {% else %}
+                                <form method="post">
+                                    {% csrf_token %}
+ 
+                                    <input
+                                        type="hidden"
+                                        name="employee_id"
+                                        value="{{ employee.pk }}"
+                                    >
+ 
+                                    {% if employee.is_active %}
+                                        <button type="submit" class="action-btn disable-btn">
+                                            Отключить
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="action-btn enable-btn">
+                                            Включить
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+ 
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty">
+                            Сотрудники пока не добавлены
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+ 
+        </div>
+    </div>
+ 
+</main>
+ 
+</body>
+</html>

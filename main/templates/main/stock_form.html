@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <title>Добавление запчасти</title>
+ 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+ 
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+ 
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+ 
+        h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+ 
+        .subtitle {
+            color: #777;
+            margin-bottom: 25px;
+        }
+ 
+        .form-group {
+            margin-bottom: 18px;
+        }
+ 
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+ 
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d5dbe3;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+ 
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+ 
+        textarea {
+            resize: vertical;
+        }
+ 
+        .button {
+            display: inline-block;
+            padding: 13px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+ 
+        .button:hover {
+            background: #1d4ed8;
+        }
+ 
+        .back {
+            display: inline-block;
+            margin-left: 10px;
+            color: #555;
+            text-decoration: none;
+        }
+ 
+        .errors {
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'main/css/fixpoint.css' %}">
+</head>
+ 
+<body>
+ 
+<div class="container">
+ 
+    <h1>Добавить запчасть</h1>
+ 
+    <p class="subtitle">
+        Заполните информацию о новой детали для склада.
+    </p>
+ 
+    <form method="POST">
+        {% csrf_token %}
+ 
+        {% if form.errors %}
+            <div class="errors">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+ 
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+ 
+                {{ field }}
+ 
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+ 
+        <button type="submit" class="button">
+            Сохранить запчасть
+        </button>
+ 
+        <a href="{% url 'stock_list' %}" class="back">
+            Назад
+        </a>
+ 
+    </form>
+ 
+</div>
+ 
+</body>
+</html>
+ 

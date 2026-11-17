@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход для мастера</title>
+ 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+ 
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+ 
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        }
+ 
+        h1 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 10px;
+        }
+ 
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 30px;
+        }
+ 
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+ 
+        input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+ 
+        input:focus {
+            outline: none;
+            border-color: #315efb;
+        }
+ 
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #315efb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+ 
+        button:hover {
+            background: #244bd1;
+        }
+ 
+        .error {
+            background: #ffe8e8;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+ 
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #315efb;
+            text-decoration: none;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'main/css/fixpoint.css' %}">
+</head>
+ 
+<body>
+ 
+<div class="login-card">
+ 
+    <h1>Панель мастера</h1>
+    <p class="subtitle">Введите данные для доступа</p>
+ 
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+ 
+    <form method="post">
+        {% csrf_token %}
+ 
+        <label for="username">Логин</label>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Введите логин"
+            required
+        >
+ 
+        <label for="password">Пароль</label>
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Введите пароль"
+            required
+        >
+ 
+        <button type="submit">Войти в панель</button>
+    </form>
+ 
+    <a href="{% url 'home' %}" class="back">Вернуться на главную</a>
+ 
+</div>
+ 
+</body>
+</html>
+ 
+ 

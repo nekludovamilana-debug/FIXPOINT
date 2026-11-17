@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявка №{{ repair.id }} — RepairWorkshop</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 28px 16px; font-family: Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
+        .container { max-width: 980px; margin: auto; }
+        .card { background: white; border-radius: 14px; padding: 24px; margin-bottom: 18px; box-shadow: 0 3px 14px #0f172a0b; }
+        h1, h2 { margin-top: 0; }
+        h2 { font-size: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+        .item { background: #f8fafc; border-radius: 9px; padding: 13px; overflow-wrap: anywhere; }
+        .label { display: block; color: #64748b; font-size: 13px; margin-bottom: 7px; }
+        .value { font-weight: 600; white-space: pre-wrap; }
+        .photo { display: block; max-width: 100%; max-height: 420px; border-radius: 10px; margin-top: 12px; object-fit: contain; }
+        .button { display: inline-block; border: 0; border-radius: 8px; padding: 11px 16px; background: #2563eb; color: white; text-decoration: none; cursor: pointer; }
+        .muted { color: #64748b; }
+        input, select, textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; margin: 6px 0 12px; }
+        textarea { resize: vertical; }
+        .form-row { max-width: 560px; }
+        .entry { border-bottom: 1px solid #e2e8f0; padding: 12px 0; }
+        .entry:last-child { border-bottom: 0; }
+        .errorlist { color: #dc2626; }
+        @media (max-width: 600px) { .card { padding: 18px; } }
+    </style>
+    <link rel="stylesheet" href="{% static 'main/css/fixpoint.css' %}">
+</head>
+<body>
+<div class="container">
+    <section class="card">
+        <h1>Заявка №{{ repair.id }}</h1>
+        <p class="muted">Создана {{ repair.created_at|date:"d.m.Y H:i" }}</p>
+        <div class="grid">
+            <div class="item"><span class="label">Имя клиента</span><span class="value">{{ repair.customer_name }}</span></div>
+            <div class="item"><span class="label">Телефон</span><span class="value">{{ repair.phone }}</span></div>
+            <div class="item"><span class="label">Устройство</span><span class="value">{{ repair.device }}</span></div>
+            <div class="item"><span class="label">Услуга</span><span class="value">{% if repair.service %}{{ repair.service.name }}{% else %}Не выбрана{% endif %}</span></div>
+            <div class="item"><span class="label">Стоимость услуги</span><span class="value">{{ repair.service_price|floatformat:2 }} ₽</span></div>
+            <div class="item"><span class="label">Стоимость работ мастера</span><span class="value">{{ repair.labor_cost|floatformat:2 }} ₽</span></div>
+            <div class="item"><span class="label">Статус</span><span class="value">{{ repair.get_status_display }}</span></div>
+            <div class="item"><span class="label">Назначенный мастер</span><span class="value">{% if repair.assigned_master %}{{ repair.assigned_master.get_full_name|default:repair.assigned_master.username }}{% else %}Пока не назначен{% endif %}</span></div>
+        </div>
+        <div class="item" style="margin-top:14px"><span class="label">Описание неисправности</span><span class="value">{{ repair.problem }}</span></div>
+        {% if repair.photo %}
+            <h2 style="margin-top:20px">Фотография неисправности</h2>
+            <a href="{{ repair.photo.url }}" target="_blank" rel="noopener"><img src="{{ repair.photo.url }}" alt="Фотография неисправности" class="photo"></a>
+        {% endif %}
+        <p style="margin-top:20px">
+            {% if user.is_staff %}<a href="{% url 'master_panel' %}" class="button">← Панель мастера</a>
+            {% else %}<a href="{% url 'account' %}" class="button">← Личный кабинет</a>{% endif %}
+        </p>
+    </section>
+
+    {% if can_manage %}
+    <section class="card">
+        <h2>Стоимость работ мастера</h2>
+        <p class="muted">Укажите стоимость выполненных работ отдельно от цены услуги и запчастей.</p>
+        <form method="post" class="form-row">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="labor_cost">
+            {{ labor_form.as_p }}
+            <button class="button" type="submit">Сохранить стоимость работ</button>
+        </form>
+    </section>
+    {% endif %}
+
+    <section class="card">
+        <h2>История статусов</h2>
+        {% for item in status_history %}
+            <div class="entry">
+                <strong>{{ item.get_new_status_display }}</strong>
+                <div class="muted">{{ item.created_at|date:"d.m.Y H:i" }} · {% if item.changed_by %}{{ item.changed_by.username }}{% else %}Система{% endif %}</div>
+                {% if item.comment %}<div>{{ item.comment }}</div>{% endif %}
+            </div>
+        {% empty %}<p class="muted">История пока пуста.</p>{% endfor %}
+    </section>
+
+    <section class="card">
+        <h2>Комментарии</h2>
+        {% for item in comments %}
+            <div class="entry">
+                <strong>{% if item.author %}{{ item.author.username }}{% else %}Пользователь удалён{% endif %}</strong>
+                <div class="muted">{{ item.created_at|date:"d.m.Y H:i" }}</div>
+                <p>{{ item.text|linebreaksbr }}</p>
+            </div>
+        {% empty %}<p class="muted">Комментариев пока нет.</p>{% endfor %}
+        <form method="post" class="form-row">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="comment">
+            {{ comment_form.as_p }}
+            <button class="button" type="submit">Добавить комментарий</button>
+        </form>
+    </section>
+
+    {% if can_manage %}
+    <section class="card">
+        <h2>Использованные запчасти</h2>
+        {% for usage in part_usages %}
+            <div class="entry">
+                <strong>{{ usage.part.name }}</strong> — {{ usage.quantity }} шт.
+                <div class="muted">{{ usage.unit_price|floatformat:2 }} ₽ за шт. · Итого {{ usage.total_price|floatformat:2 }} ₽ · {{ usage.created_at|date:"d.m.Y H:i" }}</div>
+            </div>
+        {% empty %}<p class="muted">Для этой заявки запчасти ещё не списывались.</p>{% endfor %}
+        <h3>Списать запчасть со склада</h3>
+        <form method="post" class="form-row">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_part">
+            {{ part_form.as_p }}
+            <button class="button" type="submit">Списать со склада</button>
+        </form>
+    </section>
+    {% endif %}
+</div>
+</body>
+</html>

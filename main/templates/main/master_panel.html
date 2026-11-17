@@ -1,0 +1,965 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель мастера | FIXPOINT</title>
+ 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f3f4;
+            color: #171719;
+        }
+ 
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+ 
+        /* БОКОВОЕ МЕНЮ */
+ 
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 245px;
+            background: #171719;
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+ 
+        .logo {
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 0 0 45px 10px;
+        }
+ 
+        .logo span {
+            color: #d52232;
+        }
+ 
+        .sidebar-caption {
+            color: #777;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 15px 12px;
+        }
+ 
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+ 
+        .sidebar-menu a {
+            color: #bdbdbd;
+            padding: 13px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+ 
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #302124;
+            color: white;
+            border-left: 3px solid #d52232;
+        }
+ 
+        .sidebar-menu a.active {
+            font-weight: bold;
+        }
+ 
+        .sidebar-bottom {
+            margin-top: auto;
+            border-top: 1px solid #353537;
+            padding-top: 20px;
+        }
+ 
+        .sidebar-bottom p {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 12px;
+            padding-left: 10px;
+        }
+ 
+        .admin-link {
+            display: block;
+            color: #aaa;
+            font-size: 13px;
+            padding: 10px;
+        }
+ 
+        .admin-link:hover {
+            color: #e52b3b;
+        }
+ 
+        /* ОСНОВНАЯ ЧАСТЬ */
+ 
+        .main {
+            margin-left: 245px;
+            padding: 35px 40px;
+            min-height: 100vh;
+        }
+ 
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            gap: 20px;
+        }
+ 
+        .page-heading h1 {
+            font-size: 29px;
+            margin-bottom: 8px;
+        }
+ 
+        .page-heading p {
+            color: #888;
+            font-size: 14px;
+        }
+ 
+        .user-info {
+            background: white;
+            border-radius: 7px;
+            padding: 12px 18px;
+            font-size: 13px;
+            box-shadow: 0 2px 8px #00000008;
+        }
+ 
+        .user-info span {
+            color: #c52232;
+            font-weight: bold;
+        }
+ 
+        /* СТАТИСТИКА */
+ 
+        .section-title {
+            font-size: 19px;
+            margin-bottom: 18px;
+        }
+ 
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 35px;
+        }
+ 
+        .stat-card {
+            background: #ffffff;
+            padding: 21px;
+            border-radius: 9px;
+            border: 1px solid #eeeeef;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 12px #00000006;
+            transition: 0.2s;
+        }
+ 
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px #00000010;
+        }
+ 
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #d52232;
+        }
+ 
+        .stat-card h3 {
+            color: #888;
+            font-size: 12px;
+            font-weight: normal;
+            margin-bottom: 15px;
+        }
+ 
+        .stat-card p {
+            font-size: 29px;
+            font-weight: bold;
+            color: #171719;
+        }
+ 
+        /* ФИЛЬТРЫ */
+ 
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 9px;
+            margin-bottom: 30px;
+            border: 1px solid #eeeeef;
+            box-shadow: 0 3px 12px #00000006;
+        }
+ 
+        .filters h2 {
+            font-size: 19px;
+            margin-bottom: 22px;
+        }
+ 
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(150px, 1fr)) auto;
+            gap: 15px;
+            align-items: end;
+        }
+ 
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+ 
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 13px;
+            outline: none;
+            background: white;
+        }
+ 
+        .field input:focus,
+        .field select:focus {
+            border-color: #c52232;
+            box-shadow: 0 0 0 2px #c5223215;
+        }
+ 
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+        }
+ 
+        button,
+        .reset-button {
+            border: none;
+            border-radius: 5px;
+            padding: 12px 17px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            display: inline-block;
+            transition: 0.2s;
+        }
+ 
+        .search-button {
+            background: #c52232;
+            color: white;
+        }
+ 
+        .search-button:hover,
+        .save-button:hover {
+            background: #a71927;
+        }
+ 
+        .reset-button {
+            background: #ededee;
+            color: #333;
+        }
+ 
+        .reset-button:hover {
+            background: #ddd;
+        }
+ 
+        /* ТАБЛИЦА ЗАЯВОК */
+ 
+        .table-container {
+            background: white;
+            border-radius: 9px;
+            padding: 25px;
+            border: 1px solid #eeeeef;
+            box-shadow: 0 3px 12px #00000006;
+        }
+ 
+        .table-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+ 
+        .table-heading h2 {
+            font-size: 19px;
+        }
+ 
+        .found-count {
+            color: #888;
+            font-size: 13px;
+        }
+ 
+        .table-wrapper {
+            overflow-x: auto;
+        }
+ 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+ 
+        th {
+            background: #f4f4f5;
+            color: #777;
+            text-align: left;
+            padding: 15px 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+ 
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eeeeef;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+ 
+        tbody tr:hover {
+            background: #fafafa;
+        }
+ 
+        .repair-id {
+            color: #c52232;
+            font-weight: bold;
+        }
+ 
+        .customer-name {
+            font-weight: bold;
+        }
+ 
+        .problem-text {
+            max-width: 150px;
+            color: #777;
+            line-height: 1.4;
+        }
+ 
+        .status-form {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+ 
+        .status-form select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 11px;
+            max-width: 125px;
+            background: white;
+        }
+ 
+        .save-button {
+            background: #c52232;
+            color: white;
+            padding: 9px 11px;
+            font-size: 11px;
+        }
+ 
+        .details-link {
+            color: #c52232;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+ 
+        .details-link:hover {
+            text-decoration: underline;
+        }
+ 
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #888;
+        }
+ 
+        /* ПАГИНАЦИЯ */
+ 
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+ 
+        .pagination a,
+        .pagination span {
+            padding: 10px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            background: #ededee;
+            color: #333;
+            font-size: 12px;
+        }
+ 
+        .pagination a:hover {
+            background: #d52232;
+            color: white;
+        }
+ 
+        .pagination .current {
+            background: #c52232;
+            color: white;
+        }
+ 
+        .pagination .disabled {
+            opacity: 0.4;
+        }
+ 
+        .page-info {
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+ 
+        /* АДАПТИВНОСТЬ */
+ 
+        @media (max-width: 1250px) {
+            .main {
+                padding: 30px 25px;
+            }
+ 
+            .statistics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+ 
+            .filter-form {
+                grid-template-columns: repeat(2, minmax(150px, 1fr));
+            }
+        }
+ 
+        @media (max-width: 750px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 20px;
+            }
+ 
+            .logo {
+                margin-bottom: 20px;
+            }
+ 
+            .sidebar-menu {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+ 
+            .sidebar-bottom {
+                margin-top: 20px;
+            }
+ 
+            .main {
+                margin-left: 0;
+                padding: 25px 15px;
+            }
+ 
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+ 
+        @media (max-width: 500px) {
+            .statistics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+ 
+            .stat-card {
+                padding: 15px;
+            }
+ 
+            .stat-card p {
+                font-size: 24px;
+            }
+ 
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+ 
+            .filter-buttons {
+                flex-direction: column;
+            }
+ 
+            .table-container {
+                padding: 15px;
+            }
+ 
+            .table-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+<!-- БОКОВОЕ МЕНЮ -->
+ 
+<aside class="sidebar">
+ 
+    <a href="{% url 'home' %}" class="logo">
+        FIX<span>POINT</span>
+    </a>
+ 
+    <div class="sidebar-caption">
+        Рабочее пространство
+    </div>
+ 
+    <nav class="sidebar-menu">
+ 
+        <a href="{% url 'master_panel' %}" class="active">
+            Панель мастера
+        </a>
+ 
+        <a href="{% url 'stock_list' %}">
+            Склад запчастей
+        </a>
+ 
+        <a href="{% url 'service_list' %}">
+            Управление услугами
+        </a>
+ 
+        {% if user.is_superuser %}
+            <a href="{% url 'employee_list' %}">
+                Сотрудники
+            </a>
+        {% endif %}
+ 
+        <a href="{% url 'reports' %}">
+            Отчёты и аналитика
+        </a>
+ 
+    </nav>
+ 
+    <div class="sidebar-bottom">
+ 
+        <p>Администрирование</p>
+ 
+        <a href="/admin/" class="admin-link">
+            Админ-панель →
+        </a>
+ 
+    </div>
+ 
+</aside>
+ 
+<!-- ОСНОВНАЯ ЧАСТЬ -->
+ 
+<main class="main">
+ 
+    <header class="topbar">
+ 
+        <div class="page-heading">
+            <h1>Панель мастера</h1>
+            <p>Управление заявками и работой ремонтной мастерской</p>
+        </div>
+ 
+        <div class="user-info">
+            Вы вошли как:
+            <span>{{ user.username }}</span>
+        </div>
+ 
+    </header>
+ 
+    <!-- СТАТИСТИКА -->
+ 
+    <section>
+ 
+        <h2 class="section-title">Общая статистика</h2>
+ 
+        <div class="statistics">
+ 
+            <div class="stat-card">
+                <h3>Всего заявок</h3>
+                <p>{{ statistics.total }}</p>
+            </div>
+ 
+            <div class="stat-card">
+                <h3>Принятые</h3>
+                <p>{{ statistics.new }}</p>
+            </div>
+ 
+            <div class="stat-card">
+                <h3>В диагностике</h3>
+                <p>{{ statistics.diagnostics }}</p>
+            </div>
+ 
+            <div class="stat-card">
+                <h3>В ремонте</h3>
+                <p>{{ statistics.in_progress }}</p>
+            </div>
+ 
+            <div class="stat-card">
+                <h3>Готовы к выдаче</h3>
+                <p>{{ statistics.ready }}</p>
+            </div>
+ 
+            <div class="stat-card">
+                <h3>Завершённые</h3>
+                <p>{{ statistics.completed }}</p>
+            </div>
+ 
+            <div class="stat-card">
+                <h3>Выданные</h3>
+                <p>{{ statistics.issued }}</p>
+            </div>
+ 
+            {% if can_assign %}
+                <div class="stat-card">
+                    <h3>Без мастера</h3>
+                    <p>{{ statistics.unassigned }}</p>
+                </div>
+            {% endif %}
+ 
+        </div>
+ 
+    </section>
+ 
+    <!-- ПОИСК И ФИЛЬТРАЦИЯ -->
+ 
+    <section class="filters">
+ 
+        <h2>Поиск и фильтрация заявок</h2>
+ 
+        <form method="GET" class="filter-form">
+ 
+            <div class="field">
+                <label for="q">Поиск</label>
+ 
+                <input
+                    type="text"
+                    id="q"
+                    name="q"
+                    placeholder="Имя, телефон, устройство..."
+                    value="{{ search_query }}"
+                >
+            </div>
+ 
+            <div class="field">
+                <label for="status">Статус заявки</label>
+ 
+                <select name="status" id="status">
+ 
+                    <option value="">Все статусы</option>
+ 
+                    {% for code, name in status_choices %}
+                        <option value="{{ code }}"
+                            {% if selected_status == code %}selected{% endif %}>
+                            {{ name }}
+                        </option>
+                    {% endfor %}
+ 
+                </select>
+            </div>
+ 
+            <div class="field">
+                <label for="date">Дата создания</label>
+ 
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value="{{ selected_date }}"
+                >
+            </div>
+ 
+            <div class="filter-buttons">
+ 
+                <button type="submit" class="search-button">
+                    Найти
+                </button>
+ 
+                <a href="{% url 'master_panel' %}" class="reset-button">
+                    Сбросить
+                </a>
+ 
+            </div>
+ 
+        </form>
+ 
+    </section>
+ 
+    <!-- СПИСОК ЗАЯВОК -->
+ 
+    <section class="table-container">
+ 
+        <div class="table-heading">
+ 
+            <h2>Список заявок</h2>
+ 
+            <span class="found-count">
+                Найдено заявок: {{ paginator.count }}
+            </span>
+ 
+        </div>
+ 
+        <div class="table-wrapper">
+ 
+            <table>
+ 
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Клиент</th>
+                        <th>Телефон</th>
+                        <th>Устройство</th>
+                        <th>Услуга</th>
+                        <th>Стоимость</th>
+                        <th>Проблема</th>
+                        <th>Дата</th>
+                        <th>Статус</th>
+                        <th>Назначенный мастер</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+ 
+                <tbody>
+ 
+                    {% for repair in repairs %}
+ 
+                        <tr>
+ 
+                            <td class="repair-id">
+                                #{{ repair.id }}
+                            </td>
+ 
+                            <td class="customer-name">
+                                {{ repair.customer_name }}
+                            </td>
+ 
+                            <td>
+                                {{ repair.phone }}
+                            </td>
+ 
+                            <td>
+                                {{ repair.device }}
+                            </td>
+ 
+                            <td>
+                                {% if repair.service %}
+                                    {{ repair.service.name }}
+                                {% else %}
+                                    Не выбрана
+                                {% endif %}
+                            </td>
+ 
+                            <td>
+                                {% if repair.service %}
+                                    {{ repair.service_price }} ₽
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+ 
+                            <td class="problem-text">
+                                {{ repair.problem }}
+                            </td>
+ 
+                            <td>
+                                {{ repair.created_at|date:"d.m.Y H:i" }}
+                            </td>
+ 
+                            <td>
+ 
+                                <form method="POST" class="status-form">
+ 
+                                    {% csrf_token %}
+ 
+                                    <input
+                                        type="hidden"
+                                        name="repair_id"
+                                        value="{{ repair.id }}"
+                                    >
+ 
+                                    <select name="status">
+ 
+                                        {% for code, name in status_choices %}
+ 
+                                            <option value="{{ code }}"
+                                                {% if repair.status == code %}selected{% endif %}>
+                                                {{ name }}
+                                            </option>
+ 
+                                        {% endfor %}
+ 
+                                    </select>
+ 
+                                    <button type="submit" class="save-button">
+                                        Сохранить
+                                    </button>
+ 
+                                </form>
+ 
+                            </td>
+ 
+                            <td>
+ 
+                                {% if can_assign %}
+ 
+                                    <form method="POST" class="status-form">
+ 
+                                        {% csrf_token %}
+ 
+                                        <input
+                                            type="hidden"
+                                            name="action"
+                                            value="assign"
+                                        >
+ 
+                                        <input
+                                            type="hidden"
+                                            name="repair_id"
+                                            value="{{ repair.id }}"
+                                        >
+ 
+                                        <select name="assigned_master">
+ 
+                                            <option value="">
+                                                Не назначен
+                                            </option>
+ 
+                                            {% for master in masters %}
+ 
+                                                <option value="{{ master.id }}"
+                                                    {% if repair.assigned_master_id == master.id %}selected{% endif %}>
+                                                    {{ master.username }}
+                                                </option>
+ 
+                                            {% endfor %}
+ 
+                                        </select>
+ 
+                                        <button type="submit" class="save-button">
+                                            Назначить
+                                        </button>
+ 
+                                    </form>
+ 
+                                {% elif repair.assigned_master %}
+ 
+                                    {{ repair.assigned_master.username }}
+ 
+                                {% else %}
+ 
+                                    —
+ 
+                                {% endif %}
+ 
+                            </td>
+ 
+                            <td>
+ 
+                                <a
+                                    class="details-link"
+                                    href="{% url 'repair_detail' repair.id %}"
+                                >
+                                    Подробнее
+                                </a>
+ 
+                            </td>
+ 
+                        </tr>
+ 
+                    {% empty %}
+ 
+                        <tr>
+                            <td colspan="11" class="empty">
+                                Заявки не найдены.
+                            </td>
+                        </tr>
+ 
+                    {% endfor %}
+ 
+                </tbody>
+ 
+            </table>
+ 
+        </div>
+ 
+        <!-- ПАГИНАЦИЯ -->
+ 
+        {% if page_obj.has_other_pages %}
+ 
+            <div class="pagination">
+ 
+                {% if page_obj.has_previous %}
+ 
+                    <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_status %}status={{ selected_status|urlencode }}&{% endif %}{% if selected_date %}date={{ selected_date|urlencode }}&{% endif %}page=1">
+                        Первая
+                    </a>
+ 
+                    <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_status %}status={{ selected_status|urlencode }}&{% endif %}{% if selected_date %}date={{ selected_date|urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                        Назад
+                    </a>
+ 
+                {% else %}
+ 
+                    <span class="disabled">Первая</span>
+                    <span class="disabled">Назад</span>
+ 
+                {% endif %}
+ 
+                <span class="current">
+                    {{ page_obj.number }} из {{ paginator.num_pages }}
+                </span>
+ 
+                {% if page_obj.has_next %}
+ 
+                    <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_status %}status={{ selected_status|urlencode }}&{% endif %}{% if selected_date %}date={{ selected_date|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">
+                        Далее
+                    </a>
+ 
+                    <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_status %}status={{ selected_status|urlencode }}&{% endif %}{% if selected_date %}date={{ selected_date|urlencode }}&{% endif %}page={{ paginator.num_pages }}">
+                        Последняя
+                    </a>
+ 
+                {% else %}
+ 
+                    <span class="disabled">Далее</span>
+                    <span class="disabled">Последняя</span>
+ 
+                {% endif %}
+ 
+            </div>
+ 
+            <p class="page-info">
+                Показаны заявки {{ page_obj.start_index }}–{{ page_obj.end_index }}
+                из {{ paginator.count }}
+            </p>
+ 
+        {% endif %}
+ 
+    </section>
+ 
+</main>
+ 
+</body>
+</html>

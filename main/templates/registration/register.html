@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — RepairWorkshop</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 460px;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .helptext {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-top: -12px;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            color: #64748b;
+            font-size: 12px;
+            padding-left: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'main/css/fixpoint.css' %}">
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <h1>Регистрация</h1>
+    <p class="subtitle">Создайте аккаунт RepairWorkshop</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% if field.help_text %}
+                <div class="helptext">{{ field.help_text }}</div>
+            {% endif %}
+
+            {% for error in field.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <button type="submit">Создать аккаунт</button>
+    </form>
+
+    <a href="{% url 'login' %}" class="back-link">
+        Уже есть аккаунт? Войти
+    </a>
+
+</div>
+
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,1188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#171719">
+    <title>FIXPOINT — ремонт техники</title>
+ 
+    <style>
+        :root {
+            --red: #b91f2d;
+            --red-dark: #971724;
+            --ink: #171719;
+            --muted: #77777f;
+            --paper: #f5f5f6;
+            --line: #e8e8eb;
+            --white: #fff;
+        }
+ 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        html {
+            scroll-behavior: smooth;
+        }
+ 
+        body {
+            font-family: Arial, sans-serif;
+            color: var(--ink);
+            background: var(--white);
+        }
+ 
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+ 
+        .topbar {
+            background: var(--ink);
+            color: #d7d7da;
+            font-size: 12px;
+        }
+ 
+        .topbar-inner {
+            max-width: 1180px;
+            margin: auto;
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+ 
+        .topbar strong {
+            color: white;
+        }
+ 
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(255,255,255,.96);
+            border-bottom: 1px solid var(--line);
+        }
+ 
+        .header-inner {
+            max-width: 1180px;
+            min-height: 78px;
+            margin: auto;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+ 
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            font-size: 21px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+ 
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            color: white;
+            background: var(--red);
+            font-size: 19px;
+        }
+ 
+        .brand span:last-child {
+            color: var(--red);
+        }
+ 
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+ 
+        nav a {
+            color: #45454b;
+            font-size: 13px;
+            font-weight: 700;
+        }
+ 
+        nav a:hover {
+            color: var(--red);
+        }
+ 
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+ 
+        .user-greeting {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+ 
+        .logout-form {
+            display: inline;
+        }
+ 
+        .logout-button {
+            border: 0;
+            background: transparent;
+            color: var(--red);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+ 
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            padding: 0 21px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            background: var(--red);
+            color: white;
+            font-size: 13px;
+            font-weight: 800;
+            transition: .2s;
+            cursor: pointer;
+        }
+ 
+        .btn:hover {
+            background: var(--red-dark);
+            transform: translateY(-2px);
+        }
+ 
+        .btn-outline {
+            background: white;
+            color: var(--ink);
+            border-color: #d8d8dc;
+        }
+ 
+        .btn-outline:hover {
+            color: white;
+            background: var(--ink);
+        }
+ 
+        .btn-dark {
+            background: var(--ink);
+        }
+ 
+        .btn-dark:hover {
+            background: #333338;
+        }
+ 
+        /* Главный экран */
+ 
+        .hero {
+            overflow: hidden;
+            background: var(--paper);
+        }
+ 
+        .hero-inner {
+            max-width: 1180px;
+            min-height: 560px;
+            margin: auto;
+            padding: 76px 24px 70px;
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            align-items: center;
+            gap: 45px;
+        }
+ 
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 22px;
+            color: var(--red);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+ 
+        .eyebrow:before {
+            content: '';
+            width: 25px;
+            height: 2px;
+            background: var(--red);
+        }
+ 
+        h1 {
+            max-width: 650px;
+            font-size: clamp(39px, 5vw, 62px);
+            line-height: 1.04;
+            letter-spacing: -2.7px;
+            font-weight: 900;
+        }
+ 
+        h1 span {
+            color: var(--red);
+        }
+ 
+        .hero-copy {
+            max-width: 510px;
+            margin-top: 23px;
+            color: #696970;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+ 
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 31px;
+        }
+ 
+        .hero-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 28px;
+            color: #77777f;
+            font-size: 12px;
+        }
+ 
+        .check {
+            display: grid;
+            place-items: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            color: white;
+            background: var(--red);
+        }
+ 
+        /* Иллюстрация телефона */
+ 
+        .visual {
+            position: relative;
+            min-height: 370px;
+            display: grid;
+            place-items: center;
+        }
+ 
+        .visual-panel {
+            position: relative;
+            width: min(100%, 470px);
+            height: 350px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--ink);
+            box-shadow: 0 24px 55px rgba(23,23,25,.18);
+        }
+ 
+        .visual-panel:before {
+            content: '';
+            position: absolute;
+            width: 310px;
+            height: 310px;
+            top: -110px;
+            right: -70px;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 35px rgba(255,255,255,.035),
+                0 0 0 70px rgba(255,255,255,.025);
+        }
+ 
+        .visual-panel:after {
+            content: '';
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            left: -100px;
+            bottom: -155px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+ 
+        .device {
+            position: absolute;
+            z-index: 2;
+            top: 54px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-7deg);
+            width: 190px;
+            height: 245px;
+            padding: 10px;
+            border: 5px solid #55555d;
+            border-radius: 24px;
+            background: #080809;
+        }
+ 
+        .device-screen {
+            height: 100%;
+            border-radius: 12px;
+            background: linear-gradient(
+                145deg,
+                #f4f4f5 0 45%,
+                #dedee2 45% 100%
+            );
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+ 
+        .device-screen:before {
+            content: '';
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            background: var(--red);
+        }
+ 
+        .device-screen:after {
+            content: '';
+            width: 75px;
+            height: 6px;
+            border-radius: 10px;
+            background: #a6a6ad;
+            box-shadow: 0 14px 0 #c4c4c9;
+        }
+ 
+        .tool {
+            position: absolute;
+            z-index: 3;
+            width: 72px;
+            height: 72px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 18px;
+            background: #29292e;
+            color: white;
+            font-size: 31px;
+        }
+ 
+        .tool-one {
+            left: 35px;
+            bottom: 48px;
+            transform: rotate(-12deg);
+        }
+ 
+        .tool-two {
+            right: 38px;
+            top: 45px;
+            transform: rotate(10deg);
+        }
+ 
+        .visual-label {
+            position: absolute;
+            z-index: 4;
+            right: 24px;
+            bottom: 24px;
+            padding: 13px 17px;
+            border-radius: 9px;
+            background: white;
+            color: var(--ink);
+            font-size: 12px;
+            font-weight: 800;
+        }
+ 
+        .visual-label b {
+            display: block;
+            margin-top: 4px;
+            color: var(--red);
+            font-size: 17px;
+        }
+ 
+        /* Преимущества */
+ 
+        .stats {
+            background: white;
+            border-bottom: 1px solid var(--line);
+        }
+ 
+        .stats-inner {
+            max-width: 1180px;
+            margin: auto;
+            padding: 25px 24px;
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 20px;
+        }
+ 
+        .stat {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 13px;
+        }
+ 
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: #fff0f1;
+            color: var(--red);
+            font-size: 19px;
+        }
+ 
+        .stat strong {
+            display: block;
+            font-size: 14px;
+        }
+ 
+        .stat small {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+ 
+        /* Услуги */
+ 
+        .section {
+            max-width: 1180px;
+            margin: auto;
+            padding: 85px 24px;
+        }
+ 
+        .section-heading {
+            margin-bottom: 38px;
+            text-align: center;
+        }
+ 
+        .section-heading .eyebrow {
+            margin-bottom: 13px;
+        }
+ 
+        h2 {
+            font-size: clamp(28px, 3vw, 38px);
+            letter-spacing: -1.2px;
+            font-weight: 900;
+        }
+ 
+        .section-subtitle {
+            max-width: 600px;
+            margin: 13px auto 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+ 
+        .category {
+            margin-top: 38px;
+        }
+ 
+        .category h3 {
+            margin-bottom: 18px;
+            font-size: 19px;
+            font-weight: 850;
+        }
+ 
+        .service-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 17px;
+        }
+ 
+        .service-card {
+            min-height: 190px;
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: white;
+            transition: .2s;
+        }
+ 
+        .service-card:hover {
+            transform: translateY(-4px);
+            border-color: #e5b5ba;
+            box-shadow: 0 15px 30px rgba(23,23,25,.06);
+        }
+ 
+        .service-symbol {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            background: #fff0f1;
+            color: var(--red);
+            font-size: 17px;
+        }
+ 
+        .service-card h4 {
+            margin-bottom: 9px;
+            font-size: 16px;
+        }
+ 
+        .service-card p {
+            min-height: 40px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.65;
+        }
+ 
+        .service-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--line);
+        }
+ 
+        .price {
+            color: var(--red);
+            font-size: 17px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+ 
+        .duration {
+            color: var(--muted);
+            font-size: 10px;
+            text-align: right;
+        }
+ 
+        .empty-services {
+            padding: 25px;
+            border: 1px dashed #d5d5d9;
+            border-radius: 10px;
+            color: var(--muted);
+            text-align: center;
+        }
+ 
+        /* О нас */
+ 
+        .about {
+            background: var(--ink);
+            color: white;
+        }
+ 
+        .about-inner {
+            max-width: 1180px;
+            margin: auto;
+            padding: 72px 24px;
+            display: grid;
+            grid-template-columns: .9fr 1.1fr;
+            gap: 55px;
+            align-items: center;
+        }
+ 
+        .about h2 {
+            max-width: 390px;
+        }
+ 
+        .about .eyebrow {
+            color: #ff9ba3;
+        }
+ 
+        .about .eyebrow:before {
+            background: #ff9ba3;
+        }
+ 
+        .about-text {
+            color: #c4c4c9;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+ 
+        .about-points {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 25px;
+        }
+ 
+        .about-point {
+            padding: 17px;
+            border: 1px solid #3b3b40;
+            border-radius: 10px;
+        }
+ 
+        .about-point b {
+            display: block;
+            margin-bottom: 6px;
+            color: white;
+            font-size: 13px;
+        }
+ 
+        .about-point span {
+            color: #aaaab1;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+ 
+        /* Заявка и подвал */
+ 
+        .contact {
+            max-width: 1180px;
+            margin: 65px auto;
+            padding: 48px 30px;
+            border-radius: 16px;
+            background: #fff0f1;
+            text-align: center;
+        }
+ 
+        .contact h2 {
+            margin-bottom: 12px;
+        }
+ 
+        .contact p {
+            margin-bottom: 23px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+ 
+        footer {
+            background: #111113;
+            color: #aaaab1;
+        }
+ 
+        .footer-inner {
+            max-width: 1180px;
+            margin: auto;
+            padding: 25px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            font-size: 11px;
+        }
+ 
+        .footer-brand {
+            color: white;
+            font-size: 14px;
+            font-weight: 900;
+        }
+ 
+        .footer-brand span {
+            color: #e34a57;
+        }
+ 
+        /* Адаптация под телефон */
+ 
+        @media (max-width: 900px) {
+            .header-inner {
+                flex-direction: column;
+            }
+ 
+            nav {
+                justify-content: center;
+                gap: 16px;
+            }
+ 
+            .hero-inner {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding-top: 58px;
+            }
+ 
+            .hero-content {
+                text-align: center;
+            }
+ 
+            .hero-copy {
+                margin-left: auto;
+                margin-right: auto;
+            }
+ 
+            .hero-buttons,
+            .hero-note {
+                justify-content: center;
+            }
+ 
+            .visual {
+                min-height: 330px;
+            }
+ 
+            .visual-panel {
+                max-width: 430px;
+            }
+        }
+ 
+        @media (max-width: 600px) {
+            .topbar-inner {
+                justify-content: center;
+                text-align: center;
+            }
+ 
+            .topbar-inner span:last-child {
+                display: none;
+            }
+ 
+            .header-inner {
+                padding: 14px 16px;
+            }
+ 
+            nav {
+                gap: 13px;
+            }
+ 
+            nav a {
+                font-size: 12px;
+            }
+ 
+            .nav-actions {
+                justify-content: center;
+            }
+ 
+            .hero-inner {
+                padding: 48px 18px 45px;
+            }
+ 
+            h1 {
+                font-size: 39px;
+                letter-spacing: -1.8px;
+            }
+ 
+            .hero-copy {
+                font-size: 14px;
+            }
+ 
+            .hero-buttons {
+                flex-direction: column;
+            }
+ 
+            .hero-buttons .btn {
+                width: 100%;
+            }
+ 
+            .visual {
+                min-height: 285px;
+            }
+ 
+            .visual-panel {
+                height: 275px;
+            }
+ 
+            .device {
+                top: 35px;
+                width: 145px;
+                height: 195px;
+            }
+ 
+            .tool {
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+ 
+            .tool-one {
+                left: 20px;
+                bottom: 30px;
+            }
+ 
+            .tool-two {
+                right: 20px;
+                top: 28px;
+            }
+ 
+            .visual-label {
+                right: 12px;
+                bottom: 12px;
+                padding: 9px 12px;
+            }
+ 
+            .stats-inner {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+ 
+            .stat {
+                justify-content: flex-start;
+                max-width: 260px;
+                margin: auto;
+                width: 100%;
+            }
+ 
+            .section {
+                padding: 60px 18px;
+            }
+ 
+            .about-inner {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                padding: 58px 18px;
+            }
+ 
+            .about-points {
+                grid-template-columns: 1fr;
+            }
+ 
+            .contact {
+                margin: 35px 16px;
+                padding: 38px 20px;
+            }
+ 
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><strong>FIXPOINT</strong> — сервисный центр по ремонту техники</span>
+        <span>Профессиональная диагностика · Надёжный ремонт</span>
+    </div>
+</div>
+ 
+<header>
+    <div class="header-inner">
+ 
+        <a class="brand" href="{% url 'home' %}">
+            <span class="brand-mark">F</span>
+            <span>FIX<span>POINT</span></span>
+        </a>
+ 
+        <nav>
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="#services">Услуги</a>
+            <a href="#advantages">О нас</a>
+ 
+            <div class="nav-actions">
+ 
+                {% if user.is_authenticated %}
+ 
+                    <span class="user-greeting">
+                        Привет, {{ user.username }}!
+                    </span>
+ 
+                    <a href="{% url 'account' %}" class="btn btn-outline">
+                        Личный кабинет
+                    </a>
+ 
+                    <form method="POST"
+                          action="{% url 'logout' %}"
+                          class="logout-form">
+ 
+                        {% csrf_token %}
+ 
+                        <button type="submit" class="logout-button">
+                            Выйти
+                        </button>
+ 
+                    </form>
+ 
+                    <a href="{% url 'create_request' %}" class="btn">
+                        Оставить заявку
+                    </a>
+ 
+                {% else %}
+ 
+                    <a href="{% url 'login' %}">Войти</a>
+ 
+                    <a href="{% url 'register' %}" class="btn btn-outline">
+                        Регистрация
+                    </a>
+ 
+                    <a href="{% url 'register' %}" class="btn">
+                        Оставить заявку
+                    </a>
+ 
+                {% endif %}
+ 
+                <a href="{% url 'master_login' %}" class="btn btn-dark">
+                    Для мастера
+                </a>
+ 
+            </div>
+        </nav>
+    </div>
+</header>
+ 
+<main>
+ 
+    <!-- Главный экран -->
+ 
+    <section class="hero">
+        <div class="hero-inner">
+ 
+            <div class="hero-content">
+ 
+                <div class="eyebrow">
+                    Сервисный центр FIXPOINT
+                </div>
+ 
+                <h1>
+                    Вернём вашей технике
+                    <span>идеальную</span> работу
+                </h1>
+ 
+                <p class="hero-copy">
+                    Ремонтируем смартфоны, ноутбуки и компьютеры.
+                    Проводим диагностику, согласовываем стоимость
+                    и держим вас в курсе каждого этапа.
+                </p>
+ 
+                <div class="hero-buttons">
+ 
+                    {% if user.is_authenticated %}
+ 
+                        <a href="{% url 'create_request' %}" class="btn">
+                            Оставить заявку →
+                        </a>
+ 
+                    {% else %}
+ 
+                        <a href="{% url 'register' %}" class="btn">
+                            Оставить заявку →
+                        </a>
+ 
+                    {% endif %}
+ 
+                    <a href="#services" class="btn btn-outline">
+                        Посмотреть услуги
+                    </a>
+ 
+                </div>
+ 
+                <div class="hero-note">
+                    <span class="check">✓</span>
+                    Понятные условия и связь с мастером на каждом этапе
+                </div>
+ 
+            </div>
+ 
+            <div class="visual">
+                <div class="visual-panel">
+ 
+                    <div class="device">
+                        <div class="device-screen"></div>
+                    </div>
+ 
+                    <div class="tool tool-one">⚙</div>
+                    <div class="tool tool-two">＋</div>
+ 
+                    <div class="visual-label">
+                        Техника снова в деле
+                        <b>FIXPOINT</b>
+                    </div>
+ 
+                </div>
+            </div>
+ 
+        </div>
+    </section>
+ 
+    <!-- Преимущества -->
+ 
+    <section class="stats">
+ 
+        <div class="stats-inner">
+ 
+            <div class="stat">
+                <span class="stat-icon">⌁</span>
+                <div>
+                    <strong>Точная диагностика</strong>
+                    <small>Определяем причину неисправности</small>
+                </div>
+            </div>
+ 
+            <div class="stat">
+                <span class="stat-icon">✓</span>
+                <div>
+                    <strong>Контроль ремонта</strong>
+                    <small>Следите за статусом своей заявки</small>
+                </div>
+            </div>
+ 
+            <div class="stat">
+                <span class="stat-icon">◷</span>
+                <div>
+                    <strong>Удобное оформление</strong>
+                    <small>Оставьте заявку онлайн в любое время</small>
+                </div>
+            </div>
+ 
+        </div>
+ 
+    </section>
+ 
+    <!-- Услуги -->
+ 
+    <section class="section" id="services">
+ 
+        <div class="section-heading">
+ 
+            <div class="eyebrow">Что мы ремонтируем</div>
+ 
+            <h2>Наши услуги</h2>
+ 
+            <p class="section-subtitle">
+                Выберите нужную услугу. Итоговая стоимость
+                и сроки уточняются после диагностики.
+            </p>
+ 
+        </div>
+ 
+        {% for category in categories %}
+ 
+            <div class="category">
+ 
+                <h3>{{ category.name }}</h3>
+ 
+                <div class="service-list">
+ 
+                    {% for service in category.services %}
+ 
+                        <article class="service-card">
+ 
+                            <div class="service-symbol">✦</div>
+ 
+                            <h4>{{ service.name }}</h4>
+ 
+                            <p>{{ service.description }}</p>
+ 
+                            <div class="service-bottom">
+ 
+                                <div class="price">
+                                    {{ service.price }} ₽
+                                </div>
+ 
+                                <div class="duration">
+                                    Срок: {{ service.duration }}
+                                </div>
+ 
+                            </div>
+ 
+                        </article>
+ 
+                    {% endfor %}
+ 
+                </div>
+ 
+            </div>
+ 
+        {% empty %}
+ 
+            <div class="empty-services">
+                Пока услуги не добавлены.
+                Загляните сюда немного позже.
+            </div>
+ 
+        {% endfor %}
+ 
+    </section>
+ 
+    <!-- О нас -->
+ 
+    <section class="about" id="advantages">
+ 
+        <div class="about-inner">
+ 
+            <div>
+ 
+                <div class="eyebrow">Почему FIXPOINT</div>
+ 
+                <h2>
+                    Заботимся о вашей технике и вашем времени
+                </h2>
+ 
+            </div>
+ 
+            <div>
+ 
+                <p class="about-text">
+                    Мы стремимся обеспечить качественный ремонт техники,
+                    оперативную диагностику и прозрачное обслуживание.
+                    Каждая заявка обрабатывается индивидуально,
+                    а информация о ходе ремонта доступна в личном кабинете.
+                </p>
+ 
+                <div class="about-points">
+ 
+                    <div class="about-point">
+                        <b>Понятный процесс</b>
+                        <span>
+                            Отправляйте заявку и отслеживайте
+                            изменение её статуса.
+                        </span>
+                    </div>
+ 
+                    <div class="about-point">
+                        <b>Внимание к деталям</b>
+                        <span>
+                            Фиксируем неисправность и информацию
+                            о выполненных работах.
+                        </span>
+                    </div>
+ 
+                </div>
+ 
+            </div>
+ 
+        </div>
+ 
+    </section>
+ 
+    <!-- Оставить заявку -->
+ 
+    <section class="contact">
+ 
+        <div class="eyebrow">Мы готовы помочь</div>
+ 
+        <h2>Нужен ремонт?</h2>
+ 
+        <p>
+            Оставьте заявку онлайн — и мы приступим к её обработке.
+        </p>
+ 
+        {% if user.is_authenticated %}
+ 
+            <a href="{% url 'create_request' %}" class="btn">
+                Заказать ремонт →
+            </a>
+ 
+        {% else %}
+ 
+            <a href="{% url 'register' %}" class="btn">
+                Зарегистрироваться →
+            </a>
+ 
+        {% endif %}
+ 
+    </section>
+ 
+</main>
+ 
+<footer>
+ 
+    <div class="footer-inner">
+ 
+        <div class="footer-brand">
+            FIX<span>POINT</span>
+        </div>
+ 
+        <p>© 2026 FIXPOINT. Все права защищены.</p>
+ 
+        <a href="{% url 'master_login' %}">
+            Вход для мастера
+        </a>
+ 
+    </div>
+ 
+</footer>
+ 
+</body>
+</html>

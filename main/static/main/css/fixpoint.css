@@ -1,0 +1,56 @@
+/* FIXPOINT — единая визуальная система ремонтной мастерской */
+:root{--red:#b91f2d;--red-dark:#941827;--red-soft:#fff0f1;--ink:#171719;--muted:#73737b;--line:#e9e7e7;--paper:#fff;--bg:#f5f4f4;--radius:16px;--shadow:0 10px 30px rgba(25,15,17,.06)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;background:var(--bg)!important;color:var(--ink)!important;line-height:1.55}
+body:before{content:"";display:block;height:5px;background:linear-gradient(90deg,var(--red),#e65b65)}
+h1,h2,h3,h4{color:var(--ink)!important;letter-spacing:-.025em}
+h1{font-weight:800!important;line-height:1.15}
+p{line-height:1.65}
+a{color:var(--red)}
+a:hover{color:var(--red-dark)}
+header{background:#fff!important;border-bottom:1px solid var(--line);box-shadow:0 3px 16px rgba(0,0,0,.035)!important}
+.logo{color:var(--red)!important;font-weight:900!important;letter-spacing:.04em}
+nav a{transition:.2s}
+nav a:hover{color:var(--red)!important}
+.nav-button,.button,.btn,button,.search-button,.save-button,.edit-button,.top-buttons a,.navigation a{background:var(--red)!important;color:#fff!important;border:1px solid var(--red)!important;border-radius:10px!important;font-weight:700!important;box-shadow:0 4px 10px rgba(185,31,45,.12);transition:transform .18s,background .18s,box-shadow .18s}
+.nav-button:hover,.button:hover,.btn:hover,button:hover,.search-button:hover,.save-button:hover,.edit-button:hover,.top-buttons a:hover,.navigation a:hover{background:var(--red-dark)!important;color:#fff!important;transform:translateY(-1px);box-shadow:0 7px 16px rgba(185,31,45,.18)}
+.master-button,.logout,.logout-button,.delete-button,.danger{background:var(--ink)!important;border-color:var(--ink)!important;color:#fff!important}
+.logout-button{background:transparent!important;color:var(--red)!important;border:0!important;box-shadow:none!important}
+.hero{background:linear-gradient(115deg,#1b191a 0%,#292426 62%,#4b2027 100%)!important;color:#fff!important;text-align:left!important;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:360px;height:360px;border:70px solid rgba(255,255,255,.045);border-radius:50%;right:5%;top:-100px;pointer-events:none}
+.hero h1,.hero h2,.hero p{color:#fff!important;position:relative;z-index:1}
+.hero h1{font-size:clamp(34px,5vw,58px)!important;max-width:780px}
+.hero p{color:#e6dfe0!important}
+.hero .button{background:var(--red)!important}
+.services,.advantages,.contact{background:var(--bg)!important}
+.services h2,.advantages h2,.contact h2{font-weight:800!important}
+.category h3{color:var(--red)!important}
+.service-card,.card,.stat-card,.filters,.table-container,.login-container,.register-container,.login-card,.item,.service-info,.wrap>section{background:#fff!important;border:1px solid var(--line)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
+.service-card{transition:transform .2s,box-shadow .2s}
+.service-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(25,15,17,.09)!important}
+.price,.stat-card p,.stat-number{color:var(--red)!important}
+.stat-card{border-top:3px solid var(--red)!important}
+.stat-card h3,.muted,.subtitle,.user-greeting,.duration{color:var(--muted)!important}
+input,select,textarea{border:1px solid #d9d5d6!important;border-radius:10px!important;background:#fff!important;color:var(--ink)!important;padding:12px!important;font:inherit!important;max-width:100%}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--red)!important;box-shadow:0 0 0 3px rgba(185,31,45,.1)!important}
+label,.field label{color:#353236!important;font-weight:700!important}
+table{border-collapse:separate!important;border-spacing:0!important;border-radius:12px;overflow:hidden}
+th{background:#f7eeee!important;color:#3a2528!important;font-weight:800!important}
+th,td{border-bottom:1px solid var(--line)!important}
+tr:hover td{background:#fffafa}
+.item{background:#faf8f8!important;box-shadow:none!important}
+.error,.errorlist{color:#a51625!important}
+footer{background:var(--ink)!important;color:#fff!important}
+.navigation a{background:var(--ink)!important;border-color:var(--ink)!important}
+.navigation a:hover{background:var(--red)!important;border-color:var(--red)!important}
+.filters h2{font-weight:800}
+.status-form{flex-wrap:wrap}
+.photo{border:1px solid var(--line);padding:5px;background:#fff}
+.entry{border-color:var(--line)!important}
+.login-container,.register-container,.login-card{border-top:5px solid var(--red)!important}
+.login-container h1:before,.register-container h1:before,.login-card h1:before{content:"FIXPOINT";display:block;color:var(--red);font-size:13px;letter-spacing:.18em;margin-bottom:12px}
+.back-link,.back{color:var(--red)!important}
+/* Плотная адаптация под смартфоны */
+@media(max-width:750px){body{padding-left:14px!important;padding-right:14px!important}header{padding:18px 5%!important}nav{justify-content:center;gap:12px!important}.hero{padding:64px 7%!important}.hero h1{font-size:36px!important}.services,.advantages{padding:48px 5%!important}.statistics{grid-template-columns:repeat(2,minmax(0,1fr))!important}.card,.filters,.table-container{padding:17px!important}.login-container,.register-container,.login-card{padding:28px 22px!important}}
+@media(max-width:420px){.statistics{grid-template-columns:1fr!important}.hero h1{font-size:31px!important}.button,.btn{max-width:100%}}

@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <title>{% block title %}FIXPOINT{% endblock %}</title>
+ 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f3f4;
+            color: #171719;
+        }
+ 
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+ 
+        /* БОКОВОЕ МЕНЮ */
+ 
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 245px;
+            background: #171719;
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto;
+        }
+ 
+        .logo {
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 0 0 45px 10px;
+        }
+ 
+        .logo span {
+            color: #d52232;
+        }
+ 
+        .sidebar-caption {
+            color: #777;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 15px 12px;
+        }
+ 
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+ 
+        .sidebar-menu a {
+            color: #bdbdbd;
+            padding: 13px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+ 
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #302124;
+            color: white;
+            border-left: 3px solid #d52232;
+        }
+ 
+        .sidebar-menu a.active {
+            font-weight: bold;
+        }
+ 
+        .sidebar-bottom {
+            margin-top: auto;
+            border-top: 1px solid #353537;
+            padding-top: 20px;
+        }
+ 
+        .sidebar-bottom p {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 12px;
+            padding-left: 10px;
+        }
+ 
+        .admin-link {
+            display: block;
+            color: #aaa;
+            font-size: 13px;
+            padding: 10px;
+        }
+ 
+        .admin-link:hover {
+            color: #e52b3b;
+        }
+ 
+        /* ОБЛАСТЬ СТРАНИЦЫ */
+ 
+        .main {
+            margin-left: 245px;
+            padding: 35px 40px;
+            min-height: 100vh;
+        }
+ 
+        @media (max-width: 750px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 20px;
+            }
+ 
+            .logo {
+                margin-bottom: 20px;
+            }
+ 
+            .sidebar-menu {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+ 
+            .sidebar-bottom {
+                margin-top: 20px;
+            }
+ 
+            .main {
+                margin-left: 0;
+                padding: 25px 15px;
+            }
+        }
+    </style>
+ 
+    {% block extra_css %}{% endblock %}
+</head>
+ 
+<body>
+ 
+    <aside class="sidebar">
+ 
+        <a href="{% url 'home' %}" class="logo">
+            FIX<span>POINT</span>
+        </a>
+ 
+        <div class="sidebar-caption">
+            Рабочее пространство
+        </div>
+ 
+        <nav class="sidebar-menu">
+ 
+            <a href="{% url 'master_panel' %}"
+               class="{% if active_page == 'master' %}active{% endif %}">
+                Панель мастера
+            </a>
+ 
+            <a href="{% url 'stock_list' %}"
+               class="{% if active_page == 'stock' %}active{% endif %}">
+                Склад запчастей
+            </a>
+ 
+            <a href="{% url 'service_list' %}"
+               class="{% if active_page == 'services' %}active{% endif %}">
+                Управление услугами
+            </a>
+ 
+            {% if user.is_superuser %}
+                <a href="{% url 'employee_list' %}"
+                   class="{% if active_page == 'employees' %}active{% endif %}">
+                    Сотрудники
+                </a>
+            {% endif %}
+ 
+            <a href="{% url 'reports' %}"
+               class="{% if active_page == 'reports' %}active{% endif %}">
+                Отчёты и аналитика
+            </a>
+ 
+        </nav>
+ 
+        <div class="sidebar-bottom">
+ 
+            <p>Администрирование</p>
+ 
+            <a href="/admin/" class="admin-link">
+                Админ-панель →
+            </a>
+ 
+        </div>
+ 
+    </aside>
+ 
+    <main class="main">
+ 
+        {% block content %}
+        {% endblock %}
+ 
+    </main>
+ 
+</body>
+</html>

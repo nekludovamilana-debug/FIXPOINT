@@ -1,0 +1,661 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление услугами | FIXPOINT</title>
+ 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+ 
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f3f4;
+            color: #222;
+        }
+ 
+        /* ОСНОВНАЯ СТРУКТУРА */
+ 
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+ 
+        /* БОКОВОЕ МЕНЮ */
+ 
+        .sidebar {
+            width: 230px;
+            min-width: 230px;
+            min-height: 100vh;
+            background: #171719;
+            color: white;
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+        }
+ 
+        .logo {
+            margin: 0 0 42px 12px;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+ 
+        .logo span {
+            color: #e52d40;
+        }
+ 
+        .menu-title {
+            margin: 0 0 15px 12px;
+            color: #85858b;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+ 
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+ 
+        .sidebar-menu a {
+            display: block;
+            padding: 12px;
+            border-radius: 8px;
+            color: #d1d1d5;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+ 
+        .sidebar-menu a:hover {
+            background: #303034;
+            color: white;
+        }
+ 
+        .sidebar-menu a.active {
+            background: #3b3035;
+            color: white;
+            border-left: 3px solid #e52d40;
+            font-weight: bold;
+        }
+ 
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 22px;
+            border-top: 1px solid #38383d;
+        }
+ 
+        .sidebar-bottom a {
+            display: block;
+            padding: 10px 12px;
+            color: #bdbdc2;
+            text-decoration: none;
+            font-size: 12px;
+        }
+ 
+        .sidebar-bottom a:hover {
+            color: white;
+        }
+ 
+        /* ОСНОВНОЙ КОНТЕНТ */
+ 
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 32px;
+        }
+ 
+        .container {
+            max-width: 1450px;
+            margin: 0 auto;
+        }
+ 
+        .page-header {
+            margin-bottom: 28px;
+        }
+ 
+        .page-header h1 {
+            margin: 0 0 10px;
+            color: #171719;
+            font-size: 30px;
+            font-weight: 700;
+        }
+ 
+        .subtitle {
+            margin: 0;
+            color: #888;
+            font-size: 14px;
+        }
+ 
+        /* КНОПКИ */
+ 
+        .top-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+ 
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #c52232;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+ 
+        .button:hover {
+            background: #a91c2a;
+            color: white;
+        }
+ 
+        .button-dark {
+            background: #242428;
+        }
+ 
+        .button-dark:hover {
+            background: #414146;
+        }
+ 
+        /* СТАТИСТИКА */
+ 
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+ 
+        .stat-card {
+            padding: 22px;
+            background: white;
+            border: 1px solid #ededed;
+            border-left: 4px solid #c52232;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.035);
+        }
+ 
+        .stat-card h3 {
+            margin: 0 0 13px;
+            color: #888;
+            font-size: 13px;
+            font-weight: normal;
+        }
+ 
+        .stat-number {
+            color: #242424;
+            font-size: 27px;
+            font-weight: bold;
+        }
+ 
+        .stat-active {
+            border-left-color: #238348;
+        }
+ 
+        .stat-inactive {
+            border-left-color: #e09a32;
+        }
+ 
+        /* ТАБЛИЦА */
+ 
+        .section-title {
+            margin: 0 0 10px;
+            color: #252525;
+            font-size: 21px;
+        }
+ 
+        .section-description {
+            margin: 0 0 20px;
+            color: #888;
+            font-size: 13px;
+        }
+ 
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: white;
+            border: 1px solid #ededed;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.035);
+        }
+ 
+        table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
+ 
+        th {
+            padding: 16px 14px;
+            background: #f5f5f6;
+            color: #555;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+        }
+ 
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+ 
+        tbody tr:hover {
+            background: #fafafa;
+        }
+ 
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+ 
+        .service-name {
+            color: #222;
+            font-weight: 600;
+        }
+ 
+        /* СТАТУС УСЛУГИ */
+ 
+        .active-status {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            background: #eaf7ee;
+            color: #238348;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+ 
+        .inactive-status {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            background: #fff0f0;
+            color: #c52232;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+ 
+        /* ДЕЙСТВИЯ */
+ 
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+ 
+        .actions form {
+            margin: 0;
+        }
+ 
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px 12px;
+            border: none;
+            border-radius: 7px;
+            background: #c52232;
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+ 
+        .action-button:hover {
+            background: #a91c2a;
+            color: white;
+        }
+ 
+        .delete-button {
+            background: #252529;
+        }
+ 
+        .delete-button:hover {
+            background: #444;
+        }
+ 
+        .empty {
+            padding: 35px !important;
+            color: #999;
+            text-align: center;
+        }
+ 
+        /* АДАПТИВНОСТЬ */
+ 
+        @media (max-width: 1100px) {
+            .statistics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+ 
+        @media (max-width: 750px) {
+            .layout {
+                flex-direction: column;
+            }
+ 
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+                padding: 18px;
+            }
+ 
+            .logo {
+                margin: 0 0 20px 5px;
+            }
+ 
+            .sidebar-menu {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+ 
+            .sidebar-bottom {
+                margin-top: 15px;
+            }
+ 
+            .main {
+                padding: 20px 15px;
+            }
+        }
+ 
+        @media (max-width: 500px) {
+            .statistics {
+                grid-template-columns: 1fr;
+            }
+ 
+            .top-buttons {
+                flex-direction: column;
+            }
+ 
+            .button {
+                width: 100%;
+            }
+ 
+            .page-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+<div class="layout">
+ 
+    <!-- БОКОВОЕ МЕНЮ -->
+ 
+    <aside class="sidebar">
+ 
+        <div class="logo">
+            FIX<span>POINT</span>
+        </div>
+ 
+        <div class="menu-title">
+            Рабочее пространство
+        </div>
+ 
+        <nav class="sidebar-menu">
+ 
+            <a href="{% url 'master_panel' %}">
+                Панель мастера
+            </a>
+ 
+            <a href="{% url 'stock_list' %}">
+                Склад запчастей
+            </a>
+ 
+            <a href="{% url 'service_list' %}" class="active">
+                Управление услугами
+            </a>
+ 
+            {% if user.is_superuser %}
+ 
+                <a href="{% url 'employee_list' %}">
+                    Сотрудники
+                </a>
+ 
+                <a href="{% url 'reports' %}">
+                    Отчёты и аналитика
+                </a>
+ 
+            {% endif %}
+ 
+        </nav>
+ 
+        <div class="sidebar-bottom">
+ 
+            {% if user.is_superuser %}
+                <a href="/admin/">
+                    Админ-панель →
+                </a>
+            {% endif %}
+ 
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">
+                    Выйти из аккаунта
+                </a>
+            {% endif %}
+ 
+        </div>
+ 
+    </aside>
+ 
+    <!-- ОСНОВНАЯ ЧАСТЬ -->
+ 
+    <main class="main">
+ 
+        <div class="container">
+ 
+            <header class="page-header">
+ 
+                <h1>Управление услугами</h1>
+ 
+                <p class="subtitle">
+                    Управление перечнем услуг ремонтной мастерской
+                </p>
+ 
+            </header>
+ 
+            <!-- КНОПКИ -->
+ 
+            <div class="top-buttons">
+ 
+                <a href="{% url 'master_panel' %}" class="button button-dark">
+                    ← Назад к панели мастера
+                </a>
+ 
+                <a href="{% url 'add_service' %}" class="button">
+                    + Добавить услугу
+                </a>
+ 
+            </div>
+ 
+            <!-- СТАТИСТИКА -->
+ 
+            <div class="statistics">
+ 
+                <div class="stat-card">
+ 
+                    <h3>Всего услуг</h3>
+ 
+                    <div class="stat-number">
+                        {{ services|length }}
+                    </div>
+ 
+                </div>
+ 
+                <div class="stat-card stat-active">
+ 
+                    <h3>Активные услуги</h3>
+ 
+                    <div class="stat-number">
+                        {{ active_services_count|default:"—" }}
+                    </div>
+ 
+                </div>
+ 
+                <div class="stat-card stat-inactive">
+ 
+                    <h3>Скрытые услуги</h3>
+ 
+                    <div class="stat-number">
+                        {{ inactive_services_count|default:"—" }}
+                    </div>
+ 
+                </div>
+ 
+            </div>
+ 
+            <!-- СПИСОК УСЛУГ -->
+ 
+            <h2 class="section-title">
+                Список услуг
+            </h2>
+ 
+            <p class="section-description">
+                Все услуги, добавленные в ремонтную мастерскую
+            </p>
+ 
+            <div class="table-container">
+ 
+                <table>
+ 
+                    <thead>
+ 
+                        <tr>
+                            <th>№</th>
+                            <th>Название</th>
+                            <th>Категория</th>
+                            <th>Цена</th>
+                            <th>Продолжительность</th>
+                            <th>Отображение</th>
+                            <th>Действия</th>
+                        </tr>
+ 
+                    </thead>
+ 
+                    <tbody>
+ 
+                        {% for service in services %}
+ 
+                            <tr>
+ 
+                                <td>
+                                    {{ service.id }}
+                                </td>
+ 
+                                <td class="service-name">
+                                    {{ service.name }}
+                                </td>
+ 
+                                <td>
+                                    {{ service.get_category_display }}
+                                </td>
+ 
+                                <td>
+                                    {{ service.price }} ₽
+                                </td>
+ 
+                                <td>
+                                    {{ service.duration }}
+                                </td>
+ 
+                                <td>
+ 
+                                    {% if service.is_active %}
+ 
+                                        <span class="active-status">
+                                            Активна
+                                        </span>
+ 
+                                    {% else %}
+ 
+                                        <span class="inactive-status">
+                                            Скрыта
+                                        </span>
+ 
+                                    {% endif %}
+ 
+                                </td>
+ 
+                                <td>
+ 
+                                    <div class="actions">
+ 
+                                        <a
+                                            href="{% url 'edit_service' service.id %}"
+                                            class="action-button"
+                                        >
+                                            Изменить
+                                        </a>
+ 
+                                        <form
+                                            method="POST"
+                                            action="{% url 'delete_service' service.id %}"
+                                            onsubmit="return confirm('Удалить эту услугу?');"
+                                        >
+ 
+                                            {% csrf_token %}
+ 
+                                            <button
+                                                type="submit"
+                                                class="action-button delete-button"
+                                            >
+                                                Удалить
+                                            </button>
+ 
+                                        </form>
+ 
+                                    </div>
+ 
+                                </td>
+ 
+                            </tr>
+ 
+                        {% empty %}
+ 
+                            <tr>
+ 
+                                <td colspan="7" class="empty">
+                                    Услуг пока нет.
+                                </td>
+ 
+                            </tr>
+ 
+                        {% endfor %}
+ 
+                    </tbody>
+ 
+                </table>
+ 
+            </div>
+ 
+        </div>
+ 
+    </main>
+ 
+</div>
+ 
+</body>
+</html>
